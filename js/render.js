@@ -129,12 +129,8 @@ function renderClocks(id) {
 
             clocksDiv.append(div)
 
-            clockId = '#' + clockId;
-            $(clockId).on('meridiemChange', function(e, d) {
-                $(clockId + '_ampm').text(d.meridiem);
-            });
-
-            $(clockId).on('everyMinute', function(e, d) {
+            $('#' + clockId).on('everySecond', function(e, d) {
+                $('#' + d.clock.id + '_ampm').text(d.date.hour < 12 ? "AM" : "PM");
                 if (d.date.hour >= 6 && d.date.hour < 18) {
                     d.clock.dialColor = '#000000';
                     d.clock.dialBackgroundColor = 'transparent';
@@ -153,7 +149,8 @@ function renderClocks(id) {
                 code = '';
             }
 
-            $(clockId).thooClock({
+            $('#' + clockId).thooClock({
+                id: clockId,
                 size: 200,
                 brandText: clockDef.region,
                 brandText2: code,

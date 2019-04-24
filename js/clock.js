@@ -7,12 +7,13 @@
 // MIT License, http://opensource.org/licenses/MIT
 
 // Heavyily adapted. Removed alarm function. Use DST aware timezones (via luxon) instead of
-// hourCorrection. Added minute and meridiem callbacks.
+// hourCorrection.
 
 (function( $ ) {
     $.fn.thooClock = function(options) {
         this.each(function() {
             var defaults = {
+                id: 'default',
                 size: 250,
                 dialColor: '#000000',
                 dialBackgroundColor: 'transparent',
@@ -27,6 +28,7 @@
 
             var el = this;
 
+            el.id = settings.id;
             el.size = settings.size;
             el.dialColor = settings.dialColor;
             el.dialBackgroundColor = settings.dialBackgroundColor;
@@ -198,36 +200,17 @@
                 ctx.restore();
             }
 
-            function startClock(prevMeridiem, lastTick) {
-                const sleepFencepost = 2000;
-                const sleepInitial = Infinity;
+            function startClock() {
                 const delay = 1000;
 
                 var theDate = luxon.DateTime.utc().setZone(el.timeZone);
-
-                var delta = (lastTick === null) ? sleepInitial : (theDate - lastTick);
-                var slept = delta >= sleepFencepost;
 
                 var secs = theDate.second;
                 var mins = theDate.minute;
                 var hours = (theDate.hour % 12);
 
-                var meridiem = (theDate.hour < 12) ? "AM" : "PM";
-                var triggerMeridiemEvent = true;
-                var triggerMinute = true;
-                if (prevMeridiem !== null) {
-                    triggerMeridiemEvent = (meridiem !== prevMeridiem);
-                    triggerMinute = (secs == 0);
-                }
-
                 // trigger custom events
                 $(el).trigger('everySecond', {date: theDate, clock: el});
-                if (triggerMinute | slept) {
-                    $(el).trigger('everyMinute', {date: theDate, clock: el});
-                }
-                if (triggerMeridiemEvent | slept) {
-                    $(el).trigger('meridiemChange', {meridiem: meridiem, date: theDate, clock: el});
-                }
 
                 ctx.clearRect(-radius, -radius, el.size, el.size);
 
@@ -238,7 +221,7 @@
                 drawSecondHand(secs, el.secondHandColor);
 
                 var synced_delay = delay - ((new Date().getTime()) % delay);
-                setTimeout(function() {startClock(meridiem, theDate);}, synced_delay);
+                setTimeout(function () { startClock() }, synced_delay);
             }
 
             startClock(null, null);
