@@ -40,7 +40,7 @@ const clockGroups = [
         ]
     },
     {
-        name: 'Europe',
+        name: 'Europe/Africa',
         code: 'europe',
         clocks: [
             {
@@ -60,6 +60,12 @@ const clockGroups = [
                 region: 'eu-central-1',
                 code: 'fra',
                 tz: 'Europe/Berlin'
+            },
+            {
+                name: 'Cape Town',
+                region: 'af-south-1',
+                code: 'cpt',
+                tz: 'Africa/Johannesburg'
             }
         ]
     },
