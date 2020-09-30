@@ -1,6 +1,6 @@
 const clockGroups = [
     {
-        name: '&nbsp;',
+        name: '',
         code: 'local',
         clocks: [
             {
@@ -16,7 +16,7 @@ const clockGroups = [
         ]
     },
     {
-        name: 'NA/SA',
+        name: 'NASA',
         code: 'nasa',
         clocks: [
             {
@@ -41,7 +41,8 @@ const clockGroups = [
                 name: 'São Paulo',
                 region: 'sa-east-1',
                 code: 'gru',
-                tz: 'America/Sao_Paulo'
+                tz: 'America/Sao_Paulo',
+                newcol: true
             }
         ]
     },
@@ -72,6 +73,7 @@ const clockGroups = [
                 region: 'eu-central-1',
                 code: 'fra',
                 tz: 'Europe/Berlin',
+                newcol: true,
             },
             {
                 name: 'Cape Town',
@@ -107,7 +109,8 @@ const clockGroups = [
                 name: 'Sydney',
                 region: 'ap-southeast-2',
                 code: 'syd',
-                tz: 'Australia/Sydney'
+                tz: 'Australia/Sydney',
+                newcol: true
             }
         ]
     }
@@ -115,6 +118,98 @@ const clockGroups = [
 
 function renderClocks(id) {
     all = $(id);
+    table = $('<table class="clockstbl"></table>');
+    row = $('<tr></tr>');
+    table.append(row);
+    all.append(table);
+
+    clockGroups.forEach(function(group) {
+        groupId = group.code;
+
+        numCols = 1;
+        group.clocks.forEach(function(clockDef) {
+            if (clockDef.newcol) {
+                numCols++;
+            }
+        });
+
+        groupNameDiv = $('<div class="groupname">' + group.name + '</div>');
+
+        cell = $('<th colspan=' + numCols + '></th>');
+        cell.append(groupNameDiv);
+
+        row.append(cell);
+    });
+
+    row = $('<tr></tr>');
+    table.append(row);
+
+    clockGroups.forEach(function(group) {
+        mkNewCol = function(inner) {
+            clocksDiv = $('<div class="clocks"></div>');
+
+            var cell;
+            if (inner) {
+                cell = $('<td class="inner"></td>');
+            } else {
+                cell = $('<td></td>');
+            }
+            cell.append(clocksDiv);
+
+            row.append(cell);
+
+            return clocksDiv;
+        };
+
+        clocksDiv = mkNewCol(false);
+
+        group.clocks.forEach(function(clockDef) {
+            clockId = clockDef.code;
+
+            nameDiv = $('<div class="name">' + clockDef.name + '</div>');
+            clockDiv = $('<div></div>').attr('id', clockId);
+            apDiv = $('<div class="meridiem">--</div>').attr('id', clockId + '_ampm');
+
+            div = $('<div></div>').attr('class', 'clock');
+            div.append(nameDiv, clockDiv, apDiv);
+
+            if (clockDef.newcol) {
+                clocksDiv = mkNewCol(true);
+            }
+            clocksDiv.append(div);
+
+            $('#' + clockId).on('everySecond', function(e, d) {
+                $('#' + d.clock.id + '_ampm').text(d.date.hour < 12 ? "AM" : "PM");
+                if (d.date.hour >= 6 && d.date.hour < 18) {
+                    d.clock.dialColor = '#000000';
+                    d.clock.dialBackgroundColor = 'transparent';
+                    d.clock.minuteHandColor = '#222222';
+                    d.clock.hourHandColor = '#222222';
+                } else {
+                    d.clock.dialColor = '#ffffff';
+                    d.clock.dialBackgroundColor = '#000000';
+                    d.clock.minuteHandColor = '#cccccc';
+                    d.clock.hourHandColor = '#cccccc';
+                }
+            });
+
+            code = clockDef.code;
+            if (code[0] == 'x') {
+                code = '';
+            }
+
+            $('#' + clockId).thooClock({
+                id: clockId,
+                size: 200,
+                brandText: clockDef.region,
+                brandText2: code,
+                timeZone: clockDef.tz
+            });
+        });
+
+    });
+
+/*
     clockGroups.forEach(function(group) {
         groupId = group.code;
 
@@ -170,4 +265,5 @@ function renderClocks(id) {
             });
         });
     });
+*/
 };
