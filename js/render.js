@@ -16,8 +16,8 @@ const clockGroups = [
         ]
     },
     {
-        name: 'Americas',
-        code: 'americas',
+        name: 'NA/SA',
+        code: 'nasa',
         clocks: [
             {
                 name: 'Portland',
@@ -32,6 +32,12 @@ const clockGroups = [
                 tz: 'America/New_York'
             },
             {
+                name: 'Montréal',
+                region: 'ca-central-1',
+                code: 'yul',
+                tz: 'America/Toronto'
+            },
+            {
                 name: 'São Paulo',
                 region: 'sa-east-1',
                 code: 'gru',
@@ -40,8 +46,8 @@ const clockGroups = [
         ]
     },
     {
-        name: 'Europe',
-        code: 'europe',
+        name: 'EMEA',
+        code: 'emea',
         clocks: [
             {
                 name: 'Ireland',
@@ -56,17 +62,17 @@ const clockGroups = [
                 tz: 'Europe/London'
             },
             {
+                name: 'Paris',
+                region: 'eu-west-3',
+                code: 'cdg',
+                tz: 'Europe/Paris'
+            },
+            {
                 name: 'Frankfurt',
                 region: 'eu-central-1',
                 code: 'fra',
-                tz: 'Europe/Berlin'
-            }
-        ]
-    },
-    {
-        name: 'Africa',
-        code: 'africa',
-        clocks: [
+                tz: 'Europe/Berlin',
+            },
             {
                 name: 'Cape Town',
                 region: 'af-south-1',
@@ -76,8 +82,8 @@ const clockGroups = [
         ]
     },
     {
-        name: 'Asia-Pacific',
-        code: 'ap',
+        name: 'APAC',
+        code: 'apac',
         clocks: [
             {
                 name: 'Mumbai',
@@ -96,13 +102,7 @@ const clockGroups = [
                 region: 'ap-northeast-1',
                 code: 'nrt',
                 tz: 'Asia/Tokyo'
-            }
-        ]
-    },
-    {
-        name: 'Australia',
-        code: 'aus',
-        clocks: [
+            },
             {
                 name: 'Sydney',
                 region: 'ap-southeast-2',
@@ -133,13 +133,13 @@ function renderClocks(id) {
             clockId = clockDef.code;
 
             nameDiv = $('<div class="name">' + clockDef.name + '</div>');
-            clockDiv = $('<div></div>').attr('id', clockId)
+            clockDiv = $('<div></div>').attr('id', clockId);
             apDiv = $('<div class="meridiem">--</div>').attr('id', clockId + '_ampm');
 
             div = $('<div></div>').attr('class', 'clock');
             div.append(nameDiv, clockDiv, apDiv);
 
-            clocksDiv.append(div)
+            clocksDiv.append(div);
 
             $('#' + clockId).on('everySecond', function(e, d) {
                 $('#' + d.clock.id + '_ampm').text(d.date.hour < 12 ? "AM" : "PM");
