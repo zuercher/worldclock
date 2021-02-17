@@ -51,7 +51,7 @@ const clockGroups = [
         code: 'emea',
         clocks: [
             {
-                name: 'Ireland',
+                name: 'Dublin',
                 region: 'eu-west-1',
                 code: 'dub',
                 tz: 'Europe/Dublin'
